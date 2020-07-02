@@ -17,15 +17,18 @@ var (
 
 func init() {
 	flag.StringVar(&profile, "p", "default", "aws shared credential profile name")
-	flag.StringVar(&region, "r", "ap-northeast-1", "aws region")
+	flag.StringVar(&region, "r", "", "aws region")
 	flag.Parse()
 }
 
 func main() {
 	sess := session.Must(session.NewSession())
 	cred := credentials.NewSharedCredentials("", profile)
-	svc := ec2.New(sess, &aws.Config{Credentials: cred,
-		Region: aws.String(region)})
+	conf := &aws.Config{Credentials: cred}
+	if region != "" {
+		conf.Region = aws.String(region)
+	}
+	svc := ec2.New(sess, conf)
 	res, _ := svc.DescribeInstances(nil)
 
 	for _, r := range res.Reservations {
