@@ -26,10 +26,7 @@ func main() {
 	cred := credentials.NewSharedCredentials("", profile)
 	svc := ec2.New(sess, &aws.Config{Credentials: cred,
 		Region: aws.String(region)})
-	res, err := svc.DescribeInstances(nil)
-	if err != nil {
-		panic(err)
-	}
+	res, _ := svc.DescribeInstances(nil)
 
 	for _, r := range res.Reservations {
 		for _, i := range r.Instances {
